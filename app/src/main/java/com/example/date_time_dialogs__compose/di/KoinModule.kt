@@ -10,9 +10,6 @@ import org.koin.dsl.module
 val appModule = module {
 
     single { FileRepository() }
-    viewModel { FileViewModel(repository = get(),context = get()) }
+    viewModel { FileViewModel(repository = get(), context = get()) }
 
-    scope<RetrofitUploadActivity> {
-
-    }
 }

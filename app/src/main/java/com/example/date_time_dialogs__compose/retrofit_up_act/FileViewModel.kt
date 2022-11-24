@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.reflect.KProperty
 
+
 class FileViewModel(
     private val repository: FileRepository,
     context: Context
@@ -28,13 +29,22 @@ class FileViewModel(
     private val connectivityObserver = NetworkConnectivityObserver(context)
     var networkState by mutableStateOf(ConnectivityObserver.Status.Unavailable)
         private set
+    var isChanged by mutableStateOf(false)
 
     init {
         viewModelScope.launch {
             connectivityObserver.observe().collect {
                 networkState = it
+                isChanged = !isChanged
+//                executeColorFlash()
             }
         }
+    }
+
+    private suspend fun executeColorFlash() {
+        isChanged = true
+        delay(1000)
+        isChanged = false
     }
 
     var isUploaded by mutableStateOf(false)
@@ -52,4 +62,5 @@ class FileViewModel(
             setIsUploaded(result)
         }
     }
+
 }

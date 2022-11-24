@@ -4,6 +4,10 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.ColorLong
+import androidx.compose.animation.Animatable
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,21 +19,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.Button
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.date_time_dialogs__compose.connection_check.ConnectivityObserver
-import com.example.date_time_dialogs__compose.connection_check.NetworkConnectivityObserver
 import com.example.date_time_dialogs__compose.retrofit_up_act.FileViewModel
-import kotlinx.coroutines.flow.collect
-import org.koin.androidx.compose.koinViewModel
 import org.koin.androidx.viewmodel.ext.android.getViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
 class RetrofitUploadActivity : ComponentActivity() {
@@ -38,6 +38,16 @@ class RetrofitUploadActivity : ComponentActivity() {
 
         setContent {
             val viewModel: FileViewModel = getViewModel()
+
+            val bgColor = remember { Animatable(Color.Transparent) }
+            LaunchedEffect(viewModel.isChanged) {
+                if (viewModel.networkState == ConnectivityObserver.Status.Available) {
+                    bgColor.animateTo(Color.Green, animationSpec = tween(1000))
+                } else {
+                    bgColor.animateTo(Color.Red, animationSpec = tween(1000))
+                }
+                bgColor.animateTo(Color.Transparent, animationSpec = tween(1000))
+            }
 
             Surface() {
                 Column {
@@ -52,7 +62,8 @@ class RetrofitUploadActivity : ComponentActivity() {
                         Text(
                             text = "Network status: ${viewModel.networkState}",
                             fontFamily = FontFamily.Monospace,
-                            fontWeight = FontWeight.Normal
+                            fontWeight = FontWeight.Normal,
+                            modifier = Modifier.background(bgColor.value)
                         )
                     }
 
@@ -76,11 +87,16 @@ class RetrofitUploadActivity : ComponentActivity() {
                             )
                         }
                 }
+
+            // column
             }
 
+            // surface
             }
 
+        // set content
         }
+
 
     }
 }
