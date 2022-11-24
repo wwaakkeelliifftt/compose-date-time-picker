@@ -65,4 +65,17 @@ dependencies {
     implementation 'io.github.vanpra.compose-material-dialogs:datetime:0.8.1-rc'
     // need for target api <= 23; also add ' coreLibraryDesugaringEnabled true' at compileOptions
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.0'
+
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1'
+
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation "com.squareup.okhttp3:okhttp:4.10.0"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.10.0"
+
+    // koin di
+    implementation "io.insert-koin:koin-android:3.3.0"
+    implementation "io.insert-koin:koin-androidx-compose:3.3.0"
+//    implementation "io.insert-koin:koin-core:3.2.2"
+
 }

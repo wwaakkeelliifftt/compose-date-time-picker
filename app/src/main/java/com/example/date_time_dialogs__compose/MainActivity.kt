@@ -1,6 +1,7 @@
 package com.example.date_time_dialogs__compose
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -28,6 +29,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.date_time_dialogs__compose.ui.theme.DatetimedialogscomposeTheme
 import com.vanpra.composematerialdialogs.MaterialDialog
@@ -47,6 +50,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             DatetimedialogscomposeTheme {
+                val cntx = LocalContext.current
 
                 var pickedDate by remember {
                     mutableStateOf(LocalDate.now())
@@ -89,6 +93,15 @@ class MainActivity : ComponentActivity() {
                         Text(text = "Pick time")
                     }
                     Text(text = formattedTime)
+
+                    Spacer(modifier = Modifier.height(32.dp))
+                    Button(
+                        onClick = {
+                            cntx.startActivity(Intent(cntx, RetrofitUploadActivity::class.java))
+                        }
+                    ) {
+                        Text(text = "Retrofit Activity")
+                    }
                 }
 
                 MaterialDialog(
