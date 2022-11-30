@@ -1,23 +1,31 @@
 package com.example.date_time_dialogs__compose
 
 import android.annotation.SuppressLint
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -31,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.date_time_dialogs__compose.ui.theme.DatetimedialogscomposeTheme
 import com.vanpra.composematerialdialogs.MaterialDialog
@@ -102,6 +111,9 @@ class MainActivity : ComponentActivity() {
                     ) {
                         Text(text = "Retrofit Activity")
                     }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+                    DeepLinkAppIntent(context = cntx)
                 }
 
                 MaterialDialog(
@@ -192,4 +204,43 @@ fun ShowSnackbar(message: String = "DEFAULT YEP !!") {
             Text(text = "Click me! I'm a Snackbar inside Dialog")
         }
     }
+}
+
+@Composable
+fun DeepLinkAppIntent(context: Context) {
+    var input by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier.background(Color.Yellow).padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        Text(text = "type Int args for intent = $input")
+
+        TextField(
+            value = input,
+            onValueChange = {
+                input = it
+                Log.d("MainActivity::IntLOGGER", input) },
+            maxLines = 1,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        )
+
+        Button(onClick = {
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://compose-deeplink.dev/$input")
+            )
+            val pendingIntent = TaskStackBuilder.create(context).run {
+                addNextIntentWithParentStack(intent)
+                getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT
+                        or PendingIntent.FLAG_IMMUTABLE)
+            }
+            pendingIntent.send()
+        }) {
+            Text(text = "Trigger deeplink")
+        }
+
+    }
+
 }
